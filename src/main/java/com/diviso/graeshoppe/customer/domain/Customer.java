@@ -5,7 +5,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
+import org.springframework.data.elasticsearch.annotations.CompletionField;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.core.completion.Completion;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,6 +54,8 @@ public class Customer implements Serializable {
 
     @Column(name = "loyalty_point")
     private Long loyaltyPoint;
+    
+ 
 
     @OneToOne
     @JoinColumn(unique = true)
