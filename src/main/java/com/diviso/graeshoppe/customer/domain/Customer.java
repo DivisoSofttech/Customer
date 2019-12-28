@@ -55,8 +55,7 @@ public class Customer implements Serializable {
     @Column(name = "loyalty_point")
     private Long loyaltyPoint;
     
-    @CompletionField(maxInputLength = 100)
-    private Completion suggest;
+ 
 
     @OneToOne
     @JoinColumn(unique = true)
