@@ -18,4 +18,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 	Optional<Customer> findByIdpCode(String idpCode);
 	
 	Optional<Customer> findByContact_MobileNumber(Long mobileNumber);
+	
+	@Query("Select loyaltyPoint from Customer c where idpCode = ?1")
+	public long findLoyaltyPointByIdpCode(String idpCode);
 }

@@ -189,4 +189,29 @@ public class CustomerResource {
 	public Boolean checkUserExists(@PathVariable String reference) {
 		return customerService.checkUserExists(reference);
 	}
+	
+	@PostMapping("/updateLoyaltyPoint/{idpCode}/{point}")
+	public CustomerDTO updateLoyaltyPoint(@PathVariable String idpCode, @PathVariable long point) {
+		
+		Customer customer=customerService.findByIdpCode(idpCode);
+		
+		
+		if(customer.getLoyaltyPoint()==10)
+		{
+			customer.setLoyaltyPoint(0L);
+		}
+		
+		customer.setLoyaltyPoint(customer.getLoyaltyPoint()+point);
+			
+		
+		return customerService.save(customerMapper.toDto(customer));
+		
+	}
+
+	@GetMapping("/findLoyaltyPointByIdpCode/{idpCode}")
+	public long findLoyaltyPointByIdpCode(String idpCode) {
+		
+		return customerService.findLoyaltyPointByIdpCode(idpCode);
+	}
+	
 }

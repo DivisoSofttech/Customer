@@ -66,4 +66,7 @@ public interface CustomerService {
 	Optional<CustomerDTO> findByMobileNumber(Long mobileNumber);
 
 	Boolean checkUserExists(String reference);
+	
+	long findLoyaltyPointByIdpCode(String idpCode);
+	
 }

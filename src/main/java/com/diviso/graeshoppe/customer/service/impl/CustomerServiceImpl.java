@@ -188,4 +188,10 @@ public class CustomerServiceImpl implements CustomerService {
 		return result;
 	}
 
+	@Override
+	public long findLoyaltyPointByIdpCode(String idpCode) {
+	
+		return customerRepository.findLoyaltyPointByIdpCode(idpCode);
+	}
+
 }
