@@ -1,14 +1,19 @@
 package com.diviso.graeshoppe.customer.web.rest;
 
+import com.diviso.graeshoppe.customer.domain.Customer;
+import com.diviso.graeshoppe.customer.domain.OTPChallenge;
+import com.diviso.graeshoppe.customer.domain.OTPResponse;
 import com.diviso.graeshoppe.customer.service.CustomerService;
 import com.diviso.graeshoppe.customer.web.rest.errors.BadRequestAlertException;
 import com.diviso.graeshoppe.customer.service.dto.CustomerDTO;
+import com.diviso.graeshoppe.customer.service.mapper.CustomerMapper;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +43,10 @@ public class CustomerResource {
     private final Logger log = LoggerFactory.getLogger(CustomerResource.class);
 
     private static final String ENTITY_NAME = "customerCustomer";
+    
+	@Autowired
+	private CustomerMapper customerMapper;
+
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -145,4 +154,39 @@ public class CustomerResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+    
+	@PostMapping("/customer/modelToDto")
+	public ResponseEntity<CustomerDTO> modelToDto(@RequestBody Customer customer) {
+		log.debug("REST request to convert to DTO");
+		return ResponseEntity.ok().body(customerMapper.toDto(customer));
+	}
+	
+	@PostMapping("/customer/sendSMS")
+	public ResponseEntity<CustomerDTO> sendSMS(@RequestBody Customer customer) {
+		log.debug("REST request to convert to DTO");
+		return ResponseEntity.ok().body(customerMapper.toDto(customer));
+	}
+	
+	@PostMapping("/customer/otp_send")
+	OTPResponse sendSMS( @RequestParam long numbers) {
+    			
+		return customerService.sendSMS( numbers);
+	}
+	
+    @PostMapping("/customer/otp_challenge")
+	OTPChallenge verifyOTP(@RequestParam long numbers, @RequestParam String code) {
+  			
+		return customerService.verifyOTP(numbers,code);
+	}
+
+	@GetMapping("/findByReference/{reference}")
+	public Customer findByReference(@PathVariable String reference) {
+		return customerService.findByIdpCode(reference);
+	}
+	
+	
+	@GetMapping("/checkUserExists/{reference}")
+	public Boolean checkUserExists(@PathVariable String reference) {
+		return customerService.checkUserExists(reference);
+	}
 }

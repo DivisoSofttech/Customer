@@ -1,5 +1,8 @@
 package com.diviso.graeshoppe.customer.service;
 
+import com.diviso.graeshoppe.customer.domain.Customer;
+import com.diviso.graeshoppe.customer.domain.OTPChallenge;
+import com.diviso.graeshoppe.customer.domain.OTPResponse;
 import com.diviso.graeshoppe.customer.service.dto.CustomerDTO;
 
 import org.springframework.data.domain.Page;
@@ -53,4 +56,14 @@ public interface CustomerService {
      * @return the list of entities.
      */
     Page<CustomerDTO> search(String query, Pageable pageable);
+    
+	OTPResponse sendSMS(Long  numbers);
+
+	OTPChallenge verifyOTP(Long numbers, String code);
+
+	Customer findByIdpCode(String reference);
+
+	Optional<CustomerDTO> findByMobileNumber(Long mobileNumber);
+
+	Boolean checkUserExists(String reference);
 }
