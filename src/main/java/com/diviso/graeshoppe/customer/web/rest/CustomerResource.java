@@ -199,10 +199,12 @@ public class CustomerResource {
 		if(customer.getLoyaltyPoint()==10)
 		{
 			customer.setLoyaltyPoint(0L);
+			log.info("++++++++++++++++++++++++++++=="+customer.getLoyaltyPoint());
 		}
 		
+		
 		customer.setLoyaltyPoint(customer.getLoyaltyPoint()+point);
-			
+		log.info("------------------------------------------=="+customer.getLoyaltyPoint());	
 		
 		return customerService.save(customerMapper.toDto(customer));
 		
