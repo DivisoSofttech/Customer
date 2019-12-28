@@ -209,7 +209,7 @@ public class CustomerResource {
 	}
 
 	@GetMapping("/findLoyaltyPointByIdpCode/{idpCode}")
-	public long findLoyaltyPointByIdpCode(String idpCode) {
+	public long findLoyaltyPointByIdpCode(@PathVariable String idpCode) {
 		
 		return customerService.findLoyaltyPointByIdpCode(idpCode);
 	}
