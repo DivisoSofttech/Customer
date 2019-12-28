@@ -3,14 +3,15 @@ entity Customer {
 	 idpCode String required,
 	 name String,	 
 	 idpSub String,
-	 customerUniqueId String required,
-	 imageLink String required,
-	 image ImageBlob
+	 customerUniqueId String,
+	 imageLink String,
+	 image ImageBlob,
+	 loyaltyPoint Long
 	}
 
 entity Contact {
-	mobileNumber Long required,
-	phoneCode Long required,
+	mobileNumber Long,
+	phoneCode Long,
     telephone Long,
     email String	
 }
