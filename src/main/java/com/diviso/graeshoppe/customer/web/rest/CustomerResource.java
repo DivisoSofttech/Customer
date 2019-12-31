@@ -3,6 +3,7 @@ package com.diviso.graeshoppe.customer.web.rest;
 import com.diviso.graeshoppe.customer.domain.Customer;
 import com.diviso.graeshoppe.customer.domain.OTPChallenge;
 import com.diviso.graeshoppe.customer.domain.OTPResponse;
+import com.diviso.graeshoppe.customer.repository.CustomerRepository;
 import com.diviso.graeshoppe.customer.service.CustomerService;
 import com.diviso.graeshoppe.customer.web.rest.errors.BadRequestAlertException;
 import com.diviso.graeshoppe.customer.service.dto.CustomerDTO;
@@ -52,109 +53,130 @@ public class CustomerResource {
     private String applicationName;
 
     private final CustomerService customerService;
-
-    public CustomerResource(CustomerService customerService) {
-        this.customerService = customerService;
-    }
-
-    /**
-     * {@code POST  /customers} : Create a new customer.
-     *
-     * @param customerDTO the customerDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new customerDTO, or with status {@code 400 (Bad Request)} if the customer has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PostMapping("/customers")
-    public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) throws URISyntaxException {
-        log.debug("REST request to save Customer : {}", customerDTO);
-        if (customerDTO.getId() != null) {
-            throw new BadRequestAlertException("A new customer cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        CustomerDTO result = customerService.save(customerDTO);
-        return ResponseEntity.created(new URI("/api/customers/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * {@code PUT  /customers} : Updates an existing customer.
-     *
-     * @param customerDTO the customerDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated customerDTO,
-     * or with status {@code 400 (Bad Request)} if the customerDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the customerDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PutMapping("/customers")
-    public ResponseEntity<CustomerDTO> updateCustomer(@Valid @RequestBody CustomerDTO customerDTO) throws URISyntaxException {
-        log.debug("REST request to update Customer : {}", customerDTO);
-        if (customerDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        CustomerDTO result = customerService.save(customerDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, customerDTO.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * {@code GET  /customers} : get all the customers.
-     *
-
-     * @param pageable the pagination information.
-
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of customers in body.
-     */
-    @GetMapping("/customers")
-    public ResponseEntity<List<CustomerDTO>> getAllCustomers(Pageable pageable) {
-        log.debug("REST request to get a page of Customers");
-        Page<CustomerDTO> page = customerService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
-    }
-
-    /**
-     * {@code GET  /customers/:id} : get the "id" customer.
-     *
-     * @param id the id of the customerDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the customerDTO, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/customers/{id}")
-    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable Long id) {
-        log.debug("REST request to get Customer : {}", id);
-        Optional<CustomerDTO> customerDTO = customerService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(customerDTO);
-    }
-
-    /**
-     * {@code DELETE  /customers/:id} : delete the "id" customer.
-     *
-     * @param id the id of the customerDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
-    @DeleteMapping("/customers/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
-        log.debug("REST request to delete Customer : {}", id);
-        customerService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/customers?query=:query} : search for the customer corresponding
-     * to the query.
-     *
-     * @param query the query of the customer search.
-     * @param pageable the pagination information.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/customers")
-    public ResponseEntity<List<CustomerDTO>> searchCustomers(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Customers for query {}", query);
-        Page<CustomerDTO> page = customerService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
-    }
     
+    private  CustomerRepository customerRepository;
+    
+    
+
+    public CustomerResource(CustomerService customerService,CustomerRepository customerRepository) {
+        this.customerService = customerService;
+        this.customerRepository = customerRepository;
+    }
+
+	@GetMapping("/findByMobileNumber/{mobileNumber}")
+	public ResponseEntity<CustomerDTO> findByMobileNumber(@PathVariable Long mobileNumber) {
+		Optional<CustomerDTO> customerDTO=customerService.findByMobileNumber(mobileNumber);
+		return ResponseUtil.wrapOrNotFound(customerDTO);
+	}
+	
+	/**
+	 * POST /customers : Create a new customer.
+	 *
+	 * @param customerDTO the customerDTO to create
+	 * @return the ResponseEntity with status 201 (Created) and with body the new
+	 *         customerDTO, or with status 400 (Bad Request) if the customer has
+	 *         already an ID
+	 * @throws URISyntaxException if the Location URI syntax is incorrect
+	 */
+	@PostMapping("/customers")
+	public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO) throws URISyntaxException {
+
+		log.debug("REST request to save Customer : {}", customerDTO);
+
+		if (customerDTO.getId() != null) {
+			throw new BadRequestAlertException("A new customer cannot already have an ID", ENTITY_NAME, "idexists");
+		}
+
+		CustomerDTO result1 = customerService.save(customerDTO);
+		if (result1.getId() == null) {
+			throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+		}
+
+		CustomerDTO result = customerService.save(result1);
+
+		return ResponseEntity.created(new URI("/api/customers/" + result.getId()))
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, true,ENTITY_NAME, result.getId().toString())).body(result);
+	}
+
+	/**
+	 * PUT /customers : Updates an existing customer.
+	 *
+	 * @param customerDTO the customerDTO to update
+	 * @return the ResponseEntity with status 200 (OK) and with body the updated
+	 *         customerDTO, or with status 400 (Bad Request) if the customerDTO is
+	 *         not valid, or with status 500 (Internal Server Error) if the
+	 *         customerDTO couldn't be updated
+	 * @throws URISyntaxException if the Location URI syntax is incorrect
+	 */
+	@PutMapping("/customers")
+	public ResponseEntity<CustomerDTO> updateCustomer(@RequestBody CustomerDTO customerDTO) throws URISyntaxException {
+		log.debug("REST request to update Customer : {}", customerDTO);
+		if (customerDTO.getId() == null) {
+			throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+		}
+		CustomerDTO result = customerService.save(customerDTO);
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,ENTITY_NAME, customerDTO.getId().toString())).body(result);
+	}
+
+	/**
+	 * GET /customers : get all the customers.
+	 *
+	 * @param pageable the pagination information
+	 * @return the ResponseEntity with status 200 (OK) and the list of customers in
+	 *         body
+	 */
+	@GetMapping("/customers")
+	public ResponseEntity<List<CustomerDTO>> getAllCustomers(Pageable pageable) {
+		log.debug("REST request to get a page of Customers");
+		Page<CustomerDTO> page = customerService.findAll(pageable);
+		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+		return ResponseEntity.ok().headers(headers).body(page.getContent());
+	}
+
+	/**
+	 * GET /customers/:id : get the "id" customer.
+	 *
+	 * @param id the id of the customerDTO to retrieve
+	 * @return the ResponseEntity with status 200 (OK) and with body the
+	 *         customerDTO, or with status 404 (Not Found)
+	 */
+	@GetMapping("/customers/{id}")
+	public ResponseEntity<CustomerDTO> getCustomer(@PathVariable Long id) {
+		log.debug("REST request to get Customer : {}", id);
+		Optional<CustomerDTO> customerDTO = customerService.findOne(id);
+		return ResponseUtil.wrapOrNotFound(customerDTO);
+	}
+
+	/**
+	 * DELETE /customers/:id : delete the "id" customer.
+	 *
+	 * @param id the id of the customerDTO to delete
+	 * @return the ResponseEntity with status 200 (OK)
+	 */
+	@DeleteMapping("/customers/{id}")
+	public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+		log.debug("REST request to delete Customer : {}", id);
+		customerService.delete(id);
+		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+	}
+
+	/**
+	 * SEARCH /_search/customers?query=:query : search for the customer
+	 * corresponding to the query.
+	 *
+	 * @param query    the query of the customer search
+	 * @param pageable the pagination information
+	 * @return the result of the search
+	 */
+	@GetMapping("/_search/customers")
+	public ResponseEntity<List<CustomerDTO>> searchCustomers(@RequestParam String query, Pageable pageable) {
+		log.debug("REST request to search for a page of Customers for query {}", query);
+		Page<CustomerDTO> page = customerService.search(query, pageable);
+		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+		return ResponseEntity.ok().headers(headers).body(page.getContent());
+	}
+
 	@PostMapping("/customer/modelToDto")
 	public ResponseEntity<CustomerDTO> modelToDto(@RequestBody Customer customer) {
 		log.debug("REST request to convert to DTO");
@@ -179,6 +201,10 @@ public class CustomerResource {
 		return customerService.verifyOTP(numbers,code);
 	}
 
+	public CustomerRepository getCustomerRepository() {
+		return customerRepository;
+	}
+
 	@GetMapping("/findByReference/{reference}")
 	public Customer findByReference(@PathVariable String reference) {
 		return customerService.findByIdpCode(reference);
@@ -190,30 +216,9 @@ public class CustomerResource {
 		return customerService.checkUserExists(reference);
 	}
 	
-	@PostMapping("/updateLoyaltyPoint/{idpCode}/{point}")
-	public CustomerDTO updateLoyaltyPoint(@PathVariable String idpCode, @PathVariable long point) {
-		
-		Customer customer=customerService.findByIdpCode(idpCode);
-		
-		
-		if(customer.getLoyaltyPoint()==10)
-		{
-			customer.setLoyaltyPoint(0L);
-			log.info("++++++++++++++++++++++++++++=="+customer.getLoyaltyPoint());
-		}
-		
-		
-		customer.setLoyaltyPoint(customer.getLoyaltyPoint()+point);
-		log.info("------------------------------------------=="+customer.getLoyaltyPoint());	
-		
-		return customerService.save(customerMapper.toDto(customer));
-		
+	public void setCustomerRepository(CustomerRepository customerRepository) {
+		this.customerRepository = customerRepository;
 	}
 
-	@GetMapping("/findLoyaltyPointByIdpCode/{idpCode}")
-	public long findLoyaltyPointByIdpCode(@PathVariable String idpCode) {
-		
-		return customerService.findLoyaltyPointByIdpCode(idpCode);
-	}
 	
 }
