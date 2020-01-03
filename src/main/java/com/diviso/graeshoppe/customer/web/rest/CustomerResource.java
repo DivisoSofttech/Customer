@@ -221,4 +221,28 @@ public class CustomerResource {
 	}
 
 	
+	@PostMapping("/updateLoyaltyPoint/{idpCode}/{point}")
+	public CustomerDTO updateLoyaltyPoint(@PathVariable String idpCode, @PathVariable long point) {
+		
+		Customer customer=customerService.findByIdpCode(idpCode);
+		
+		
+		if(customer.getLoyaltyPoint()==10)
+		{
+			customer.setLoyaltyPoint(0L);
+		}
+		
+		customer.setLoyaltyPoint(customer.getLoyaltyPoint()+point);
+			
+		
+		return customerService.save(customerMapper.toDto(customer));
+		
+	}
+
+	@GetMapping("/findLoyaltyPointByIdpCode/{idpCode}")
+	public long findLoyaltyPointByIdpCode(@PathVariable String idpCode) {
+		
+		return customerService.findLoyaltyPointByIdpCode(idpCode);
+	}
+	
 }
