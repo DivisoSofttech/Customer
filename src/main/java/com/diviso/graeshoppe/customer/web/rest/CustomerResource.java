@@ -226,14 +226,19 @@ public class CustomerResource {
 		
 		Customer customer=customerService.findByIdpCode(idpCode);
 		
-		
+		if(customer.getLoyaltyPoint().equals(null))
+		{
+			customer.setLoyaltyPoint(0l);
+		}
+		else
+		{	
 		if(customer.getLoyaltyPoint()==10)
 		{
 			customer.setLoyaltyPoint(0L);
 		}
 		
 		customer.setLoyaltyPoint(customer.getLoyaltyPoint()+point);
-			
+		}
 		
 		return customerService.save(customerMapper.toDto(customer));
 		
