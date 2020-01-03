@@ -67,6 +67,6 @@ public interface CustomerService {
 
 	Boolean checkUserExists(String reference);
 	
-	long findLoyaltyPointByIdpCode(String idpCode);
+	Long findLoyaltyPointByIdpCode(String idpCode);
 	
 }
