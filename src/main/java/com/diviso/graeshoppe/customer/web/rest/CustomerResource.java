@@ -228,7 +228,9 @@ public class CustomerResource {
 		
 		if(customer.getLoyaltyPoint().equals(null))
 		{
-			customer.setLoyaltyPoint(0l);
+			customer.setLoyaltyPoint(0L);
+			
+			log.info("+++++++++++++++++++++++++++++"+customer.getLoyaltyPoint());
 		}
 		else
 		{	
