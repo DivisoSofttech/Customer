@@ -226,9 +226,9 @@ public class CustomerResource {
 		
 		Customer customer=customerService.findByIdpCode(idpCode);
 		
-		log.info("+++++++++++++++++++++++++++++"+customer.getLoyaltyPoint());
+		log.info("+++++++++++++++++++++++++++++"+customer);
 		
-		if(customer.getLoyaltyPoint().equals(null))
+		if(customer.getLoyaltyPoint()==null)
 		{
 			customer.setLoyaltyPoint(0L);
 			
