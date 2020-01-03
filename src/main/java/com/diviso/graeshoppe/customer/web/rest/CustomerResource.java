@@ -1,17 +1,10 @@
 package com.diviso.graeshoppe.customer.web.rest;
 
-import com.diviso.graeshoppe.customer.domain.Customer;
-import com.diviso.graeshoppe.customer.domain.OTPChallenge;
-import com.diviso.graeshoppe.customer.domain.OTPResponse;
-import com.diviso.graeshoppe.customer.repository.CustomerRepository;
-import com.diviso.graeshoppe.customer.service.CustomerService;
-import com.diviso.graeshoppe.customer.web.rest.errors.BadRequestAlertException;
-import com.diviso.graeshoppe.customer.service.dto.CustomerDTO;
-import com.diviso.graeshoppe.customer.service.mapper.CustomerMapper;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.PaginationUtil;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +12,30 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.diviso.graeshoppe.customer.domain.Customer;
+import com.diviso.graeshoppe.customer.domain.OTPChallenge;
+import com.diviso.graeshoppe.customer.domain.OTPResponse;
+import com.diviso.graeshoppe.customer.repository.CustomerRepository;
+import com.diviso.graeshoppe.customer.service.CustomerService;
+import com.diviso.graeshoppe.customer.service.dto.CustomerDTO;
+import com.diviso.graeshoppe.customer.service.mapper.CustomerMapper;
+import com.diviso.graeshoppe.customer.web.rest.errors.BadRequestAlertException;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link com.diviso.graeshoppe.customer.domain.Customer}.
@@ -225,25 +228,14 @@ public class CustomerResource {
 	public CustomerDTO updateLoyaltyPoint(@PathVariable String idpCode, @PathVariable long point) {
 		
 		Customer customer=customerService.findByIdpCode(idpCode);
-		
-		log.info("+++++++++++++++++++++++++++++"+customer);
-		
-		if(customer.getLoyaltyPoint()==null)
-		{
-			customer.setLoyaltyPoint(0L);
-			
-			log.info("+++++++++++++++++++++++++++++aftersetting"+customer.getLoyaltyPoint());
-		}
-		else
-		{	
+	
 		if(customer.getLoyaltyPoint()==10)
 		{
 			customer.setLoyaltyPoint(0L);
 		}
 		
 		customer.setLoyaltyPoint(customer.getLoyaltyPoint()+point);
-		}
-		
+				
 		return customerService.save(customerMapper.toDto(customer));
 		
 	}
