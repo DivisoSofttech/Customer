@@ -226,11 +226,13 @@ public class CustomerResource {
 		
 		Customer customer=customerService.findByIdpCode(idpCode);
 		
+		log.info("+++++++++++++++++++++++++++++"+customer.getLoyaltyPoint());
+		
 		if(customer.getLoyaltyPoint().equals(null))
 		{
 			customer.setLoyaltyPoint(0L);
 			
-			log.info("+++++++++++++++++++++++++++++"+customer.getLoyaltyPoint());
+			log.info("+++++++++++++++++++++++++++++aftersetting"+customer.getLoyaltyPoint());
 		}
 		else
 		{	
