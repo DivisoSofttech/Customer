@@ -233,6 +233,9 @@ public class CustomerResource {
 		if(customer.getLoyaltyPoint()==null) {
 			
 			customer.setLoyaltyPoint(0L);
+			
+			System.out.println("set loyalty first +++++++++++++++++++++++++++++"+customer.getLoyaltyPoint());
+			
 		}
 	
 		if(customer.getLoyaltyPoint()==10)
