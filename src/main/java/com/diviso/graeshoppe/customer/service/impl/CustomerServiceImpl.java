@@ -79,7 +79,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO save(CustomerDTO customerDTO) {
         log.debug("Request to save Customer : {}", customerDTO);
-        if(customerDTO.getCustomerUniqueId()=null)
+        if(customerDTO.getCustomerUniqueId().equals("null"))
         {
 		UniqueCustomerIDDTO uniqueId=uniqueIdService.save(new UniqueCustomerIDDTO());
 		customerDTO.setCustomerUniqueId(uniqueIdPrefix+""+uniqueId.getId());
