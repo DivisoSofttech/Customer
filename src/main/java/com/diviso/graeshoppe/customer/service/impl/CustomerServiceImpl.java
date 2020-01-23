@@ -79,8 +79,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO save(CustomerDTO customerDTO) {
         log.debug("Request to save Customer : {}", customerDTO);
+        if(customerDTO.getCustomerUniqueId()=null)
+        {
 		UniqueCustomerIDDTO uniqueId=uniqueIdService.save(new UniqueCustomerIDDTO());
 		customerDTO.setCustomerUniqueId(uniqueIdPrefix+""+uniqueId.getId());
+        }
         Customer customer = customerMapper.toEntity(customerDTO);
         customer = customerRepository.save(customer);
         CustomerDTO result = customerMapper.toDto(customer);
