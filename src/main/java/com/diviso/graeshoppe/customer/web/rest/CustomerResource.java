@@ -245,7 +245,7 @@ public class CustomerResource {
 		
 		customer.setLoyaltyPoint(customer.getLoyaltyPoint()+point);
 				
-		return customerService.save(customerMapper.toDto(customer));
+		return customerService.update(customerMapper.toDto(customer));
 		
 	}
 
