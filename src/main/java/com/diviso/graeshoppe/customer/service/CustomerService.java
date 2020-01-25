@@ -22,6 +22,8 @@ public interface CustomerService {
      * @return the persisted entity.
      */
     CustomerDTO save(CustomerDTO customerDTO);
+    
+    CustomerDTO update(CustomerDTO customerDTO);
 
     /**
      * Get all the customers.
