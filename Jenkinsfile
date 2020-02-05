@@ -1,6 +1,6 @@
 node{
   stage('SCM Checkout'){
-  git 'https://github.com/DivisoSofttech/Customer/tree/prod'
+  git branch: 'prod', url: 'https://github.com/DivisoSofttech/Customer'
   }
   stage('Compile-Package'){
   sh 'mvn install -Dmaven.test.skip=true'
