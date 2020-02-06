@@ -14,6 +14,9 @@ node{
 }
     sh 'sudo docker tag customer byta3262/customer:latest'
     sh 'sudo docker push byta3262/customer'
+      
+    sh 'sudo docker tag customer gcr.io/production-265707/customer:latest'
+    sh 'sudo docker push gcr.io/production-265707/customer'
   }
   
   stage('Push Docker Image to GCR'){
