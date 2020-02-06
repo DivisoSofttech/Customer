@@ -12,12 +12,12 @@ node{
       withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
           sh "docker login -u byta3262 -p ${dockerHubPwd}"
 }
-    sh 'sudo docker tag customer byta3262/Customer:latest'
-    sh 'sudo docker push byta3262/Customer'
+    sh 'sudo docker tag customer byta3262/customer:latest'
+    sh 'sudo docker push byta3262/customer'
   }
   
   stage('Push Docker Image to GCR'){
-    sh 'sudo docker tag customer gcr.io/production-265707/Customer:latest'
-    sh 'sudo docker push gcr.io/production-265707/Customer'
+    sh 'sudo docker tag customer gcr.io/production-265707/customer:latest'
+    sh 'sudo docker push gcr.io/production-265707/customer'
   }
 }
